@@ -198,21 +198,10 @@ int main(void)
  
   while(1)  // Do not exit
   {
-    /*
-    if (((MyBrightness + MyN) >= 3000) || ((MyBrightness + MyN) <= 0))
-    {
-        MyBrightness=0;
-      //MyN = -MyN; // if  brightness maximum/maximum change direction
-    }
-    */  
- 
-    //MyBrightness += MyN;
- 
     TIM4->CCR1 = MyBrightness[0]; // set brightness
     TIM4->CCR2 = MyBrightness[1]; // set brightness
     TIM4->CCR3 = MyBrightness[2]; // set brightness
     TIM4->CCR4 = MyBrightness[3]; // set brightness
- 
     for(i=0;i<10000;i++);  // delay
 
   }

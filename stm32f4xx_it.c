@@ -237,6 +237,8 @@ static uint8_t *USBD_HID_GetPos (void)
     static int NextY=0;
     static uint8_t HID_Buffer[4] = {0};
     HID_Buffer[0]=1;
+    NextX=MyTable[Phase][0];
+    NextY=MyTable[Phase][1];
     HID_Buffer[1]=NextX-MyX;
     HID_Buffer[2]=NextY-MyY; 
     MyX=NextX;

@@ -56,7 +56,8 @@ LIS302DL_InitTypeDef  LIS302DL_InitStruct;
 LIS302DL_FilterConfigTypeDef LIS302DL_FilterStruct;  
 __IO int8_t X_Offset, Y_Offset, Z_Offset  = 0x00;
 uint8_t Buffer[6];
-
+__IO int MyN=66;
+__IO int MyBrightness[4]={0,0,0,45*66};
 /* Private function prototypes -----------------------------------------------*/
 static uint32_t Demo_USBConfig(void);
 static void TIM4_Config(void);
@@ -69,6 +70,9 @@ static void Demo_Exec(void);
   * @param  None
   * @retval None
   */
+
+
+
 int main(void)
 {
   RCC_ClocksTypeDef RCC_Clocks;
@@ -94,8 +98,8 @@ int main(void)
   TIM_OCInitTypeDef TIM_OCInitStruct;
  
     volatile int i;
-    int n = 1;
-    int brightness = 0;
+    
+
      
     GPIO_StructInit(&GPIO_InitStructure); // Reset init structure
  
@@ -194,15 +198,20 @@ int main(void)
  
   while(1)  // Do not exit
   {
-    if (((brightness + n) >= 3000) || ((brightness + n) <= 0))
-      n = -n; // if  brightness maximum/maximum change direction
+    /*
+    if (((MyBrightness + MyN) >= 3000) || ((MyBrightness + MyN) <= 0))
+    {
+        MyBrightness=0;
+      //MyN = -MyN; // if  brightness maximum/maximum change direction
+    }
+    */  
  
-    brightness += n;
+    //MyBrightness += MyN;
  
-    TIM4->CCR1 = 1500 - brightness; // set brightness
-    TIM4->CCR2 = brightness; // set brightness
-    TIM4->CCR3 = 1500 - brightness; // set brightness
-    TIM4->CCR4 = 3000 - brightness; // set brightness
+    TIM4->CCR1 = MyBrightness[0]; // set brightness
+    TIM4->CCR2 = MyBrightness[1]; // set brightness
+    TIM4->CCR3 = MyBrightness[2]; // set brightness
+    TIM4->CCR4 = MyBrightness[3]; // set brightness
  
     for(i=0;i<10000;i++);  // delay
 

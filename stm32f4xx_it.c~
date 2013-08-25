@@ -262,6 +262,13 @@ static uint8_t *USBD_HID_GetPos (void)
           MyBrightness[3] += MyN;
           break;
     }
+
+    /**/
+    TIM4->CCR1 = MyBrightness[0]; // set brightness
+    TIM4->CCR2 = MyBrightness[1]; // set brightness
+    TIM4->CCR3 = MyBrightness[2]; // set brightness
+    TIM4->CCR4 = MyBrightness[3]; // set brightness
+    /**/
     HID_Buffer[0]=1;
     NextX=MyTable[Phase][0];
     NextY=MyTable[Phase][1];

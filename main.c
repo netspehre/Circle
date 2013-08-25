@@ -75,8 +75,8 @@ static void Demo_Exec(void);
 
 int main(void)
 {
-  RCC_ClocksTypeDef RCC_Clocks;
   
+  RCC_ClocksTypeDef RCC_Clocks;
   /* Initialize LEDs and User_Button on STM32F4-Discovery --------------------*/
   STM_EVAL_PBInit(BUTTON_USER, BUTTON_MODE_EXTI); 
 
@@ -195,17 +195,13 @@ int main(void)
     TIM_OC4Init( TIM4, &TIM_OCInitStruct ); // Channel 4  LED
  
     TIM_Cmd( TIM4, ENABLE );
- 
-  while(1)  // Do not exit
-  {
+
     TIM4->CCR1 = MyBrightness[0]; // set brightness
     TIM4->CCR2 = MyBrightness[1]; // set brightness
     TIM4->CCR3 = MyBrightness[2]; // set brightness
     TIM4->CCR4 = MyBrightness[3]; // set brightness
-    for(i=0;i<10000;i++);  // delay
 
-  }
-  /**/
+    while(1);
 
 }
 

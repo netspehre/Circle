@@ -23,7 +23,7 @@
 #include "usbd_hid_core.h"
 #include "usbd_usr.h"
 #include "usbd_desc.h"
-
+#include <setjmp.h>
 //Library config for this project!!!!!!!!!!!
 #include "stm32f4xx_conf.h"
 
@@ -57,7 +57,13 @@ LIS302DL_FilterConfigTypeDef LIS302DL_FilterStruct;
 __IO int8_t X_Offset, Y_Offset, Z_Offset  = 0x00;
 uint8_t Buffer[6];
 __IO int MyN=66;
-__IO int MyBrightness[4]={0,0,0,45*66};
+__IO int MyBrightness[4]={0,0,0,66*45};
+
+__IO int MyInitialize=0;
+
+
+__IO jmp_buf MyEnv[2];
+
 /* Private function prototypes -----------------------------------------------*/
 static uint32_t Demo_USBConfig(void);
 static void TIM4_Config(void);
@@ -99,8 +105,6 @@ int main(void)
  
     volatile int i;
     
-
-     
     GPIO_StructInit(&GPIO_InitStructure); // Reset init structure
  
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
@@ -108,58 +112,6 @@ int main(void)
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource14, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
     
-    /*//==COOLOD open PC6 8 9==
-    SystemInit();
-    
-    RCC_AHB1PeriphClockCmd(  RCC_AHB1Periph_GPIOC , ENABLE );
-    //RCC_APB1PeriphClockCmd( RCC_APB1Periph_GPIOC, ENABLE );
-    
-    GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_TIM3);
-    GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_TIM3);
-    GPIO_PinAFConfig(GPIOC, GPIO_PinSource9, GPIO_AF_TIM3);
-    //GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
-    
-    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_6 | GPIO_Pin_8 | GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;            // Alt Function - Push Pull
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_Init( GPIOC, &GPIO_InitStructure ); 
-    
-    while(1)
-    {
-    	GPIO_SetBits(GPIOC , GPIO_Pin_6);
-    	Delay(0xfffff);
-    	GPIO_ResetBits(GPIOC , GPIO_Pin_6);
-    	Delay(0xfffff);
-    }
-    
-    //=====================*/
-    
-    //====frome Book Use PA2,3=====
-    /*SystemInit();
-    RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOA, ENABLE );
-    
-    //GPIO_InitTypeDef GPIO_InitStructure;
-    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_2 | GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_Init( GPIOA, &GPIO_InitStructure );
-    
-    while(1)
-    {
-    	GPIO_SetBits(GPIOA , GPIO_Pin_3);
-    	Delay(0xfffff);
-    	GPIO_ResetBits(GPIOA , GPIO_Pin_3);
-    	Delay(0xfffff);
-    	GPIO_SetBits(GPIOA , GPIO_Pin_2);
-    	Delay(0xfffff);
-    	GPIO_ResetBits(GPIOA , GPIO_Pin_2);
-    	Delay(0xfffff);
-    }
-    
-    //=============================*/
     
 
     // Setup Blue & Green LED on STM32-Discovery Board to use PWM.
@@ -200,9 +152,8 @@ int main(void)
     TIM4->CCR2 = MyBrightness[1]; // set brightness
     TIM4->CCR3 = MyBrightness[2]; // set brightness
     TIM4->CCR4 = MyBrightness[3]; // set brightness
-
-    while(1);
-
+    while(DemoEnterCondition==0);
+    Switcher();
 }
 
 

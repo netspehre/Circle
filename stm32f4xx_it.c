@@ -116,6 +116,7 @@ void BusFault_Handler(void)
     }
 }
 
+
 /**
   * @brief  This function handles Usage Fault exception.
   * @param  None
